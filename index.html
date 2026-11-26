@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JARVIS AI</title>
+<style>
+body {
+  margin: 0;
+  background: #061323;
+  color: #00eaff;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 25px 15px;
+}
+h1 { margin-top: 35px; font-size: 38px; }
+.circle {
+  width: 170px;
+  height: 170px;
+  border: 3px solid #00eaff;
+  border-radius: 50%;
+  margin: 35px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 25px #00eaff;
+  font-size: 25px;
+}
+input {
+  width: 85%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #00eaff;
+  background: #10243a;
+  color: white;
+  font-size: 16px;
+}
+button {
+  padding: 13px 20px;
+  margin: 8px;
+  border: 0;
+  border-radius: 9px;
+  background: #00cfe8;
+  color: #001323;
+  font-weight: bold;
+}
+#reply { margin: 25px auto; max-width: 500px; }
+</style>
+</head>
+<body>
+<h1>J.A.R.V.I.S</h1>
+<p>PERSONAL MOBILE ASSISTANT</p>
+<div class="circle">ONLINE</div>
+
+<input id="command" placeholder="Type your command...">
+<br>
+<button onclick="sendCommand()">SEND</button>
+<button onclick="listen()">🎤 SPEAK</button>
+
+<p id="reply">Hello! I am JARVIS. How can I help you?</p>
+
+<script>
+function respond(message) {
+  document.getElementById("reply").innerText = message;
+  if ("speechSynthesis" in window) {
+    speechSynthesis.speak(new SpeechSynthesisUtterance(message));
+  }
+}
+
+function sendCommand() {
+  const text = document.getElementById("command").value.toLowerCase();
+  if (!text.trim()) return;
+
+  if (text.includes("hello") || text.includes("hi")) {
+    respond("Hello! How can I help you?");
+  } else if (text.includes("your name")) {
+    respond("I am JARVIS, your mobile assistant.");
+  } else if (text.includes("time")) {
+    respond("The time is " + new Date().toLocaleTimeString());
+  } else if (text.includes("date")) {
+    respond("Today is " + new Date().toDateString());
+  } else {
+    respond("I heard you. My AI connection is not set up yet.");
+  }
+}
+
+function listen() {
+  const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!Speech) {
+    respond("Voice recognition is not supported in this browser.");
+    return;
+  }
+  const recognition = new Speech();
+  recognition.lang = "en-IN";
+  recognition.onresult = function(event) {
+    document.getElementById("command").value =
+      event.results[0][0].transcript;
+    sendCommand();
+  };
+  recognition.start();
+}
+</script>
+</body>
+</html>
